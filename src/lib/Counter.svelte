@@ -27,11 +27,6 @@
         seconds = startSeconds;
     }
 
-    function repeatTimer() {
-        seconds = startSeconds;
-        startTimer();
-    }
-
     onMount(() => {
         // Cleanup interval on component destruction
         onDestroy(() => {
@@ -47,7 +42,6 @@
     <h1 class="countdown">00:{seconds < 10 ? "0" + (seconds === null ? 0 : seconds) : seconds}</h1>
     {#if seconds === 0}
         <button on:click={resetTimer}>reset</button>
-        <button on:click={repeatTimer}>repeat</button>
     {:else if running}
         <button on:click={stopTimer}>stop</button>
     {:else}
