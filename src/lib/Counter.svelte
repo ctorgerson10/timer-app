@@ -1,54 +1,62 @@
 <script>
     import { onMount, onDestroy } from 'svelte';
+    import { seconds } from "./stores.js";
+    import { running } from "./stores.js";
 
-    export let seconds = 60;
-    let running = false;
     let startSeconds;
+    let currentSeconds;
+
+    const unsubscribe = seconds.subscribe(value => {
+        currentSeconds = value;
+    })
 
     let interval;
-
     let audio;
 
     function startTimer() {
-        startSeconds = seconds;
-        running = true;
+        startSeconds = currentSeconds;
+        running.set(true);
         interval = setInterval(() => {
-            seconds -= 1;
-            if (seconds === 0) {
+            seconds.update(n => n - 1);
+            if ($seconds === 0) {
                 audio.play();
                 clearInterval(interval);
-                running = false;
             }
         }, 1000);
     }
 
     function stopTimer() {
         clearInterval(interval)
-        running = false;
+        running.set(false);
     }
 
-    function resetTimer() {
-        seconds = startSeconds;
+    function repeatTimer() {
+        seconds.set(startSeconds);
+        startTimer();
     }
 
     onMount(() => {
         // Cleanup interval on component destruction
         onDestroy(() => {
             clearInterval(interval);
+            unsubscribe();
         });
     });
-
-
 
 </script>
 
 <main>
 
-    <h1 class="countdown">00:{seconds < 10 ? "0" + (seconds === null ? 0 : seconds) : seconds}</h1>
+    {#if $running}
+        <h1 class="countdown">
+            {Math.floor(currentSeconds / 3600) < 10 ? "0" + Math.floor(currentSeconds / 3600) : Math.floor(currentSeconds / 3600)}
+            :{Math.floor((currentSeconds % 3600) / 60) < 10 ? "0" + Math.floor((currentSeconds % 3600) / 60) : Math.floor((currentSeconds % 3600) / 60)}
+            :{Math.floor(((currentSeconds %3600) % 60)) < 10 ? "0" + Math.floor(((currentSeconds %3600) % 60)) : Math.floor(((currentSeconds %3600) % 60))}
+            <!-- seconds < 10 ? "0" + (seconds === null ? 0 : seconds) : seconds -->
+        </h1>
+    {/if}
 
-    {#if seconds === 0}
-        <button on:click={resetTimer}>reset</button>
-    {:else if running}
+    {#if $running}
         <button on:click={stopTimer}>stop</button>
     {:else}
         <button on:click={startTimer}>start</button>
@@ -58,6 +66,7 @@
 </main>
 
 <style>
+
     h1 {
         font-size: 24px;
         margin-bottom: 16px;
