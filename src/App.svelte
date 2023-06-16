@@ -5,7 +5,7 @@
 </script>
 
 <main>
-  <input bind:value={inputSeconds} type="number">
+  <input name="seconds" bind:value={inputSeconds} type="number">
   <div class="card">
     <Counter seconds={inputSeconds}/>
   </div>

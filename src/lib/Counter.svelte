@@ -4,7 +4,10 @@
     export let seconds = 60;
     let running = false;
     let startSeconds;
+
     let interval;
+
+    let audio;
 
     function startTimer() {
         startSeconds = seconds;
@@ -12,6 +15,7 @@
         interval = setInterval(() => {
             seconds -= 1;
             if (seconds === 0) {
+                audio.play();
                 clearInterval(interval);
                 running = false;
             }
@@ -39,7 +43,9 @@
 </script>
 
 <main>
+
     <h1 class="countdown">00:{seconds < 10 ? "0" + (seconds === null ? 0 : seconds) : seconds}</h1>
+
     {#if seconds === 0}
         <button on:click={resetTimer}>reset</button>
     {:else if running}
@@ -47,6 +53,8 @@
     {:else}
         <button on:click={startTimer}>start</button>
     {/if}
+
+    <audio src="https://cdn.freesound.org/previews/76/76426_877451-lq.mp3" bind:this={audio}></audio>
 </main>
 
 <style>
