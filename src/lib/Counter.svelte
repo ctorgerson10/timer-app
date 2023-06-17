@@ -12,21 +12,25 @@
 
     let interval;
     let audio;
+    let finished = false;
 
     function startTimer() {
+        finished = false;
         startSeconds = currentSeconds;
         running.set(true);
         interval = setInterval(() => {
             seconds.update(n => n - 1);
             if ($seconds === 0) {
                 audio.play();
+                finished = true;
                 clearInterval(interval);
             }
         }, 1000);
     }
 
     function stopTimer() {
-        clearInterval(interval)
+        clearInterval(interval);
+        seconds.set(startSeconds);
         running.set(false);
     }
 
