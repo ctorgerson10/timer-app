@@ -1,9 +1,9 @@
 <script>
     import { seconds } from './stores.js'
 
-    export let inputSeconds = 0;
-    export let inputMinutes = 1;
-    export let inputHours = 0;
+    export let inputSeconds;
+    export let inputMinutes;
+    export let inputHours;
 
     $: totalSeconds = inputSeconds + (inputMinutes*60) + (inputHours*60*60);
 
@@ -36,7 +36,6 @@
         height: auto;
         font-size: 40px;
         padding: 10px;
-        margin-bottom: 10vh;
         text-align: left;
         font-weight: bold;
         border-radius: 0.25em;

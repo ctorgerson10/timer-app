@@ -1,7 +1,6 @@
 <script>
     import { onMount, onDestroy } from 'svelte';
-    import { seconds } from "./stores.js";
-    import { running } from "./stores.js";
+    import { seconds, running, prettyTime } from "./stores.js";
 
     let startSeconds;
     let currentSeconds;
@@ -21,8 +20,8 @@
         interval = setInterval(() => {
             seconds.update(n => n - 1);
             if ($seconds === 0) {
-                audio.play();
                 finished = true;
+                audio.play();
                 clearInterval(interval);
             }
         }, 1000);
@@ -30,13 +29,13 @@
 
     function stopTimer() {
         clearInterval(interval);
-        seconds.set(startSeconds);
         running.set(false);
     }
 
-    function repeatTimer() {
+    function resetTimer() {
         seconds.set(startSeconds);
-        startTimer();
+        running.set(false);
+        finished = false;
     }
 
     onMount(() => {
@@ -52,16 +51,19 @@
 <main>
 
     {#if $running}
-        <h1 class="countdown">
-            {Math.floor(currentSeconds / 3600) < 10 ? "0" + Math.floor(currentSeconds / 3600) : Math.floor(currentSeconds / 3600)}
-            :{Math.floor((currentSeconds % 3600) / 60) < 10 ? "0" + Math.floor((currentSeconds % 3600) / 60) : Math.floor((currentSeconds % 3600) / 60)}
-            :{Math.floor(((currentSeconds %3600) % 60)) < 10 ? "0" + Math.floor(((currentSeconds %3600) % 60)) : Math.floor(((currentSeconds %3600) % 60))}
-            <!-- seconds < 10 ? "0" + (seconds === null ? 0 : seconds) : seconds -->
-        </h1>
+        <div class="group">
+            <h1>{$prettyTime.hours}</h1>
+            <h1>:</h1>
+            <h1>{$prettyTime.minutes}</h1>
+            <h1>:</h1>
+            <h1>{$prettyTime.seconds}</h1>
+        </div>
     {/if}
 
-    {#if $running}
+    {#if ($running && !finished)}
         <button on:click={stopTimer}>stop</button>
+    {:else if ($running && finished)}
+        <button on:click={resetTimer}>reset</button>
     {:else}
         <button on:click={startTimer}>start</button>
     {/if}
@@ -71,13 +73,16 @@
 
 <style>
 
-    h1 {
-        font-size: 24px;
-        margin-bottom: 16px;
+    .group {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between;
+        align-items: baseline;
     }
 
-    .countdown {
-        font-size: 4em;
+    .group h1 {
+        font-size: 3em;
+        margin-bottom: 16px;
     }
 
     button {

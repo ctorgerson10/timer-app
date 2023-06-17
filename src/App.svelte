@@ -1,8 +1,7 @@
 <script>
   import Counter from './lib/Counter.svelte'
   import TimeInput from './lib/TimeInput.svelte';
-  import { running } from './lib/stores.js'
-  import { seconds } from './lib/stores.js'
+  import { running, seconds, prettyTime } from './lib/stores.js'
 
   let currentSeconds;
 
@@ -12,9 +11,12 @@
 
   {#if !$running}
     <div>
-      <TimeInput />
+      <TimeInput inputSeconds={$prettyTime.seconds}
+                 inputMinutes={$prettyTime.minutes}
+                 inputHours={$prettyTime.hours}/>
     </div>
   {/if}
+
 
   <div>
     <Counter seconds={$seconds}/>
