@@ -32,7 +32,7 @@
     }
 
     input {
-        width: 1.6em;
+        width: 1.75em;
         height: auto;
         font-size: 40px;
         padding: 10px;
@@ -42,6 +42,12 @@
         background-color: #1a1a1a;
         border: 1px solid #1a1a1a;
         filter: drop-shadow(0 0 1em #646cff55);
+    }
+
+    @media (prefers-color-scheme: light) {
+        input {
+            background-color: #ffffff;
+        }
     }
 
     input:focus, input:hover {
