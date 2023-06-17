@@ -2,6 +2,8 @@ import { writable, derived } from 'svelte/store';
 
 export const seconds = writable(30);
 export const running = writable(false);
+
+// maps out hours, minutes, and seconds each time $seconds is updated.
 export const prettyTime = derived(
     seconds,
     $seconds => {
